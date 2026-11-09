@@ -122,3 +122,90 @@ tr:hover {
   color: #64748b;
   font-style: italic;
 }
+
+/* --- NOVOS ESTILOS PARA PIN E EDIÇÃO --- */
+
+.area-login {
+  background-color: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 0px;
+  padding: 24px;
+  max-width: 400px;
+  margin: 0 auto 24px auto;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.area-login h2 {
+  font-size: 1.3rem;
+  color: #1e40af;
+  margin-bottom: 16px;
+}
+
+.login-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.login-box label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.login-box input {
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 0px;
+  font-size: 1.1rem;
+  text-align: center;
+  width: 100%;
+  max-width: 200px;
+}
+
+.login-box button,
+.bar-acoes button {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-radius: 0px;
+  transition: opacity 0.2s;
+}
+
+.login-box button:hover,
+.bar-acoes button:hover {
+  opacity: 0.9;
+}
+
+.bar-acoes {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.mensagem-status {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.input-edicao {
+  width: 65px;
+  padding: 6px;
+  border: 1px solid #cbd5e1;
+  border-radius: 0px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.input-invalido {
+  border: 2px solid #ef4444 !important;
+  background-color: #fef2f2;
+}

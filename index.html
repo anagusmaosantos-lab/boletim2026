@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -12,57 +12,80 @@
     <!-- Cabeçalho principal -->
     <header class="header">
       <h1>Boletim Digital</h1>
-      <p class="subtitulo">Estudante Exemplo | 8º Ano</p>
+      <p class="subtitulo">8º Ano - Turma 8B | Chamada nº 1</p>
     </header>
 
-    <!-- Área de cards de resumo -->
-    <section class="cards-grid">
-      <div class="card">
-        <h3>Média Geral</h3>
-        <p id="media-geral" class="card-valor">—</p>
+    <!-- Tela de Acesso (PIN) -->
+    <section id="area-login" class="area-login">
+      <h2>Acesso ao Boletim</h2>
+      <div class="login-box">
+        <label for="input-pin">Digite seu PIN:</label>
+        <input type="password" id="input-pin" placeholder="****" maxlength="20">
+        <button id="btn-entrar" onclick="fazerLogin()">Entrar</button>
       </div>
-
-      <div class="card">
-        <h3>Total de Faltas</h3>
-        <p id="total-faltas" class="card-valor">—</p>
-      </div>
-
-      <div class="card">
-        <h3>Bom Desempenho</h3>
-        <p id="bom-desempenho" class="card-valor">—</p>
-      </div>
-
-      <div class="card">
-        <h3>Precisa de Atenção</h3>
-        <p id="precisa-atencao" class="card-valor">—</p>
-      </div>
-
-      <div class="card">
-        <h3>Frequência Geral</h3>
-        <p id="frequencia-geral" class="card-valor">92%</p>
-        <small class="card-subtexto">Frequência adequada</small>
-      </div>
+      <p id="mensagem-login" class="mensagem-status"></p>
     </section>
 
-    <!-- Tabela responsiva de disciplinas -->
-    <section class="tabela-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Disciplina</th>
-            <th>1º Tri</th>
-            <th>2º Tri</th>
-            <th>3º Tri</th>
-            <th>Média</th>
-            <th>Faltas</th>
-            <th>Situação</th>
-          </tr>
-        </thead>
-        <tbody id="tabela-corpo">
-          <!-- O JavaScript vai preencher as linhas da tabela automaticamente aqui -->
-        </tbody>
-      </table>
-    </section>
+    <!-- Conteúdo Principal do Boletim (oculto até o login) -->
+    <div id="conteudo-boletim" style="display: none;">
+
+      <!-- Ações do Estudante -->
+      <div class="bar-acoes">
+        <button id="btn-alternar-edicao" onclick="alternarEdicao()">Alterar dados</button>
+        <button id="btn-salvar" onclick="salvarAlteracoes()" style="display: none;">Salvar alterações</button>
+        <span id="status-salvamento" class="mensagem-status"></span>
+      </div>
+
+      <!-- Área de cards de resumo -->
+      <section class="cards-grid">
+        <div class="card">
+          <h3>Média Geral</h3>
+          <p id="media-geral" class="card-valor">—</p>
+        </div>
+
+        <div class="card">
+          <h3>Total de Faltas</h3>
+          <p id="total-faltas" class="card-valor">—</p>
+        </div>
+
+        <div class="card">
+          <h3>Bom Desempenho</h3>
+          <p id="bom-desempenho" class="card-valor">—</p>
+        </div>
+
+        <div class="card">
+          <h3>Precisa de Atenção</h3>
+          <p id="precisa-atencao" class="card-valor">—</p>
+        </div>
+
+        <div class="card">
+          <h3>Frequência Geral</h3>
+          <p id="frequencia-geral" class="card-valor">92%</p>
+          <small class="card-subtexto">Frequência adequada</small>
+        </div>
+      </section>
+
+      <!-- Tabela responsiva de disciplinas -->
+      <section class="tabela-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Disciplina</th>
+              <th>1º Tri</th>
+              <th>2º Tri</th>
+              <th>3º Tri</th>
+              <th>Média</th>
+              <th>Faltas</th>
+              <th>Situação</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-corpo">
+            <!-- O JavaScript vai preencher as linhas da tabela automaticamente aqui -->
+          </tbody>
+        </table>
+      </section>
+
+    </div>
   </div>
 
   <script src="script.js"></script>
