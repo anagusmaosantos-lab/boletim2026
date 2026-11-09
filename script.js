@@ -186,4 +186,190 @@ function renderizarBoletim() {
         f1 = item.faltas[0] ?? 0;
         f2 = item.faltas[1] ?? 0;
         f3 = item.faltas[2] ?? 0;
-      } else if (
+      } else if (typeof item.faltas === "object" && item.faltas !== null) {
+        f1 = item.faltas.tri1 ?? 0;
+        f2 = item.faltas.tri2 ?? 0;
+        f3 = item.faltas.tri3 ?? 0;
+      } else {
+        f1 = item.faltas ?? 0;
+      }
+
+      tr.innerHTML = `
+        <td><strong class="nome-disc"></strong></td>
+        <td><input type="text" class="input-edicao input-nota" data-index="${index}" data-campo="tri1" value="${valorInputNota(item.tri1)}"></td>
+        <td><input type="text" class="input-edicao input-nota" data-index="${index}" data-campo="tri2" value="${valorInputNota(item.tri2)}"></td>
+        <td><input type="text" class="input-edicao input-nota" data-index="${index}" data-campo="tri3" value="${valorInputNota(item.tri3)}"></td>
+        <td><strong>${formatarNotaVisivel(media)}</strong></td>
+        <td>
+          <input type="text" title="1º Tri" class="input-edicao input-falta" data-index="${index}" data-tri="0" value="${f1}">
+          <input type="text" title="2º Tri" class="input-edicao input-falta" data-index="${index}" data-tri="1" value="${f2}">
+          <input type="text" title="3º Tri" class="input-edicao input-falta" data-index="${index}" data-tri="2" value="${f3}">
+        </td>
+        <td class="${classeSituacao}">${situacao}</td>
+      `;
+      tr.querySelector(".nome-disc").textContent = item.disciplina;
+    } else {
+      tr.innerHTML = `
+        <td><strong class="nome-disc"></strong></td>
+        <td>${formatarNotaVisivel(n1)}</td>
+        <td>${formatarNotaVisivel(n2)}</td>
+        <td>${formatarNotaVisivel(n3)}</td>
+        <td><strong>${formatarNotaVisivel(media)}</strong></td>
+        <td>${faltasTotal}</td>
+        <td class="${classeSituacao}">${situacao}</td>
+      `;
+      tr.querySelector(".nome-disc").textContent = item.disciplina;
+    }
+
+    tabelaCorpo.appendChild(tr);
+  });
+
+  const mediaGeral = qtdDisciplinasComMedia > 0 
+    ? (somaMediasValidas / qtdDisciplinasComMedia).toFixed(1).replace(".", ",") 
+    : "—";
+
+  document.getElementById("media-geral").textContent = mediaGeral;
+  document.getElementById("total-faltas").textContent = totalFaltasGeral;
+  document.getElementById("bom-desempenho").textContent = bomDesempenhoQtd;
+  document.getElementById("precisa-atencao").textContent = atencaoQtd;
+}
+
+// Alterna entre o modo de visualização e edição
+function alternarEdicao() {
+  modoEdicao = !modoEdicao;
+  const btnEdicao = document.getElementById("btn-alternar-edicao");
+  const btnSalvar = document.getElementById("btn-salvar");
+
+  if (modoEdicao) {
+    btnEdicao.textContent = "Cancelar edição";
+    btnSalvar.style.display = "inline-block";
+  } else {
+    btnEdicao.textContent = "Alterar dados";
+    btnSalvar.style.display = "none";
+  }
+
+  renderizarBoletim();
+}
+
+// Valida uma nota digitada pelo estudante (Regra 2)
+function validarNotaDigitada(str) {
+  if (str === null || str === undefined || str.trim() === "") {
+    return { ok: true, valor: null };
+  }
+  const limpo = str.trim().replace(",", ".");
+  const num = Number(limpo);
+
+  if (isNaN(num) || num < 0 || num > 10) {
+    return { ok: false };
+  }
+
+  return { ok: true, valor: num };
+}
+
+// Valida uma falta digitada pelo estudante
+function validarFaltaDigitada(str) {
+  if (str === null || str === undefined || str.trim() === "") {
+    return { ok: false };
+  }
+  const limpo = str.trim();
+  if (!/^\d+$/.test(limpo)) {
+    return { ok: false };
+  }
+  const num = Number(limpo);
+  if (num < 0) {
+    return { ok: false };
+  }
+
+  return { ok: true, valor: num };
+}
+
+// Função para salvar as alterações efetuadas na API
+async function salvarAlteracoes() {
+  const statusEl = document.getElementById("status-salvamento");
+  statusEl.textContent = "";
+
+  // Remove marcações de erros anteriores
+  document.querySelectorAll(".input-invalido").forEach(el => el.classList.remove("input-invalido"));
+
+  let possuiErro = false;
+  const inputsNotas = document.querySelectorAll(".input-nota");
+  const inputsFaltas = document.querySelectorAll(".input-falta");
+
+  // Validação dos campos de notas
+  inputsNotas.forEach(input => {
+    const val = input.value;
+    const res = validarNotaDigitada(val);
+    if (!res.ok) {
+      input.classList.add("input-invalido");
+      possuiErro = true;
+    }
+  });
+
+  // Validação dos campos de faltas
+  inputsFaltas.forEach(input => {
+    const val = input.value;
+    const res = validarFaltaDigitada(val);
+    if (!res.ok) {
+      input.classList.add("input-invalido");
+      possuiErro = true;
+    }
+  });
+
+  if (possuiErro) {
+    statusEl.textContent = "Verifique os campos destacados em vermelho.";
+    return;
+  }
+
+  // Atualiza o objeto de dados com os valores validados
+  inputsNotas.forEach(input => {
+    const idx = input.getAttribute("data-index");
+    const campo = input.getAttribute("data-campo");
+    const res = validarNotaDigitada(input.value);
+    dadosBoletimAtual[idx][campo] = res.valor;
+  });
+
+  inputsFaltas.forEach(input => {
+    const idx = input.getAttribute("data-index");
+    const triIdx = Number(input.getAttribute("data-tri"));
+    const res = validarFaltaDigitada(input.value);
+
+    if (!Array.isArray(dadosBoletimAtual[idx].faltas)) {
+      dadosBoletimAtual[idx].faltas = [0, 0, 0];
+    }
+    dadosBoletimAtual[idx].faltas[triIdx] = res.valor;
+  });
+
+  statusEl.textContent = "Salvando...";
+
+  try {
+    const resposta = await fetch(`${CONFIG_ALUNO.apiUrl}/api/v1/boletins/salvar`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        turma: CONFIG_ALUNO.turma,
+        numero_chamada: CONFIG_ALUNO.numeroChamada,
+        pin: pinSessao,
+        dados: {
+          disciplinas: dadosBoletimAtual
+        }
+      })
+    });
+
+    if (!resposta.ok) {
+      statusEl.textContent = "Erro ao salvar alterações no servidor.";
+      return;
+    }
+
+    statusEl.textContent = "Dados salvos com sucesso.";
+
+    // Desativa o modo de edição e atualiza a exibição
+    modoEdicao = false;
+    document.getElementById("btn-alternar-edicao").textContent = "Alterar dados";
+    document.getElementById("btn-salvar").style.display = "none";
+
+    renderizarBoletim();
+
+  } catch (erro) {
+    statusEl.textContent = "Erro ao salvar alterações no servidor.";
+  }
+}
