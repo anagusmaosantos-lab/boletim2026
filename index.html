@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -65,6 +65,33 @@
         </div>
       </section>
 
+      <!-- Área de Gráficos -->
+      <section class="area-graficos">
+        <article class="grafico-card">
+          <h2>Média por disciplina</h2>
+          <div class="grafico-container grafico-container-medias">
+            <canvas id="graficoMediasDisciplinas"></canvas>
+          </div>
+        </article>
+
+        <article class="grafico-card">
+          <h2>Evolução da média geral</h2>
+          <div class="grafico-container">
+            <canvas id="graficoEvolucaoTrimestres"></canvas>
+          </div>
+        </article>
+
+        <article id="card-faltas-trimestre" class="grafico-card">
+          <div class="grafico-header-faltas">
+            <h2>Faltas por trimestre</h2>
+            <span id="estadoFaltas" class="badge-perigo" style="display: none;">Perigo</span>
+          </div>
+          <div class="grafico-container">
+            <canvas id="graficoFaltasTrimestres"></canvas>
+          </div>
+        </article>
+      </section>
+
       <!-- Tabela responsiva de disciplinas -->
       <section class="tabela-container">
         <table>
@@ -88,6 +115,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
